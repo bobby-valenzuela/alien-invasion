@@ -3,10 +3,10 @@
 import sys,os,pygame
 from settings import Settings
 
-try:
-    os.environ["DISPLAY"]
-except:
-    os.environ["SDL_VIDEODRIVER"] = "dummy"
+# try:
+#     os.environ["DISPLAY"]
+# except:
+#     os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 class AlienInvasion():
 
