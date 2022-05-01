@@ -1,8 +1,12 @@
 #!/usr/bin/python3
 
-import sys
-import pygame
+import sys,os,pygame
 from settings import Settings
+
+try:
+    os.environ["DISPLAY"]
+except:
+    os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 class AlienInvasion():
 
@@ -24,7 +28,6 @@ class AlienInvasion():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
-                print(pygame.QUIT)
 
             # Redraw screen - on each iteration
             self.screen.fill(self.settings.bg_color)
