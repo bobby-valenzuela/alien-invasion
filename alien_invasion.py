@@ -3,6 +3,7 @@
 import sys,os,pygame
 from settings import Settings
 from ship import Ship
+from bullet import Bullet
 
 # try:
 #     os.environ["DISPLAY"]
@@ -17,7 +18,8 @@ class AlienInvasion():
         """Initialize game and resources."""
         pygame.init()
         self.settings = Settings()
-        self.fullscreen = True
+        self.fullscreen = False
+        # ^ Use this to set full screen for H/W specified in settings
 
         if self.fullscreen:
             self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
@@ -28,6 +30,7 @@ class AlienInvasion():
         
         pygame.display.set_caption("Alien Invasion")
         self.ship = Ship(self)
+        self.bullets = pygame.sprite.Group()
 
     def run_game(self):
         """Start the main game loop."""
@@ -35,7 +38,9 @@ class AlienInvasion():
         while True:
             self._check_events()
             self.ship.update()
+            self.bullets.update()
             self._update_screen()
+            self._update_bullets()
 
     def _check_events(self):
         """Watch for keyboard/mouse events."""
@@ -53,6 +58,8 @@ class AlienInvasion():
             self.ship.moving_right = True
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = True
+        elif event.key == pygame.K_SPACE:
+            self._fire_bullet()
         elif event.key == pygame.K_q:
             sys.exit()
 
@@ -63,13 +70,33 @@ class AlienInvasion():
         if event.key == pygame.K_LEFT:
             self.ship.moving_left = False
 
+    def _fire_bullet(self):
+        """Create new bullet and addit to the bullet group"""
+
+        if len(self.bullets) < self.settings.bullets_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
+
+    def _update_bullets(self):
+            # Get rid of bullets that have disappeard.
+            for bullet in self.bullets.copy():
+
+                if bullet.rect.bottom <= 0 :
+                    self.bullets.remove(bullet)
+
     def _update_screen(self):
         # Redraw screen - on each iteration
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
 
-        # Make most recent drawn screen visible
+        for bullet in self.bullets.sprites():
+
+            bullet.draw_bullet()
+
+        # Make most recent drawn screen visible 
+        # Note: should run at end of this method to catch all changes
         pygame.display.flip()
+
 
 
 if __name__ == '__main__':
@@ -83,5 +110,8 @@ if __name__ == '__main__':
 Win: python -m pip install pygame
 Lin: python3 -m pip install pygame
 
+
+Copy to local...
+    cp -r ../alien-invasion /mnt/c/Users/Bobby/Documents/
 """
 
