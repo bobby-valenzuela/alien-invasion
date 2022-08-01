@@ -4,6 +4,7 @@ import sys,os,pygame
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
+from alien import Alien
 
 # try:
 #     os.environ["DISPLAY"]
@@ -31,6 +32,9 @@ class AlienInvasion():
         pygame.display.set_caption("Alien Invasion")
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
+        self.aliens = pygame.sprite.Group()
+
+        self._create_fleet()
 
     def run_game(self):
         """Start the main game loop."""
@@ -93,10 +97,31 @@ class AlienInvasion():
 
             bullet.draw_bullet()
 
+        self.aliens.draw(self.screen)
+
         # Make most recent drawn screen visible 
         # Note: should run at end of this method to catch all changes
         pygame.display.flip()
 
+    def _create_alien(self, alien_number):
+        # Create aliens and place it in the row
+        alien = Alien(self)
+        alien_width = alien.rect.width
+        alien.x = alien_width + 2 * alien_width * alien_number
+        alien.rect.x = alien.x
+        self.aliens.add(alien)
+
+    def _create_fleet(self):
+        """Create a fleet of aliens"""
+        # Make an alien
+        alien = Alien(self)
+        alien_width = alien.rect.width
+        available_space_x = self.settings.screen_width - ( 2 * alien_width )
+        number_aliens_x = available_space_x // ( 2 * alien_width )
+
+        # Create first row of aliens
+        for alien_number in range(number_aliens_x) :
+            self._create_alien(alien_number)
 
 
 if __name__ == '__main__':
