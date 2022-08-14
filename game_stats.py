@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-from cgitb import reset
-
 
 class GameStats:
     """Track statistics for Alien Invasion"""
